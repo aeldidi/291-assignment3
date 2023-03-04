@@ -36,11 +36,35 @@ source_files = {
     "Customers": "olist_customers_dataset.csv",
     "Sellers": "olist_sellers_dataset.csv",
     "Orders": "olist_orders_dataset.csv",
-    "Order_items": "olist_order_items.csv",
+    "Order_items": "olist_order_items_dataset.csv",
+}
+
+column_names = {
+    "Customers": [
+        ("customer_id", "customer_id"),
+        ("customer_postal_code", "customer_zip_code_prefix"),
+    ],
+    "Sellers": [
+        ("seller_id", "seller_id"),
+        ("seller_postal_code", "seller_zip_code_prefix"),
+    ],
+    "Orders": [
+        ("order_id", "order_id"),
+        ("customer_id", "customer_id"),
+    ],
+    "Order_items": [
+        ("order_id", "order_id"),
+        ("order_item_id", "order_item_id"),
+        ("product_id", "product_id"),
+        ("seller_id", "seller_id"),
+    ],
 }
 
 
 def n_random_csv_lines(filename: str, n: int) -> list[str]:
+    """
+    Returns a list of n random lines from the file given by filename.
+    """
     with open(Path("csvs") / filename, "r") as f:
         values = list(csv.DictReader(f))
         random.shuffle(values)
@@ -52,21 +76,28 @@ def add_data(conn: sqlite3.Connection, size: Literal["Small", "Medium", "Large"]
     Given a database connection and a size ('Small', 'Medium', or 'Large'),
     add the random data to the table using the sizes in table_sizes.
     """
-    # TODO: The csv columns have different names than the assignment ones.
-    #       Convert them...
     c = conn.cursor()
     sizes = table_sizes[size]
     for table, filename in source_files.items():
-        values = n_random_csv_lines(filename, sizes[table])
-        print(tuple(values[0].keys()))
+        old_values = n_random_csv_lines(filename, sizes[table])
+        col_names = column_names[table]
+        values = []
+
+        for val in old_values:
+            tmp = {}
+            for dbname, csvname in col_names:
+                tmp[dbname] = val[csvname]
+            values.append(tmp)
+
         for value in values:
-            c.executemany(
+            c.execute(
                 f"""
                 INSERT INTO "{table}" {tuple(value.keys())}
                     VALUES ({('?,' * len(value.keys()))[:-1]});
                 """,
-                value,
+                tuple(value.values()),
             )
+    conn.commit()
 
 
 def main():
