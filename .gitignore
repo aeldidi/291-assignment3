@@ -2,3 +2,5 @@
 A3Small.db
 A3Medium.db
 A3Large.db
+__pycache__
+.DS_Store
