@@ -6,7 +6,12 @@ import sqlite3
 def main():
     with scenario.set_scenario("Uninformed") as (small, medium, large):
         small.execute(
-            "SELECT customer_postal_code FROM Customers ORDER BY RANDOM() LIMIT 1;"
+            """
+            SELECT customer_postal_code
+                FROM Customers
+                ORDER BY RANDOM()
+                LIMIT 1;
+            """
         )
 
         random_postal_code = small.fetchone()[0]
@@ -15,8 +20,15 @@ def main():
         print(question1(medium, random_postal_code))
         print(question1(large, random_postal_code))
 
-    # small, medium, large = scenario.set_scenario("Self-Optimized")
-    # small, medium, large = scenario.set_scenario("User-Optimized")
+    with scenario.set_scenario("Self-Optimized") as (small, medium, large):
+        print(question1(small, random_postal_code))
+        print(question1(medium, random_postal_code))
+        print(question1(large, random_postal_code))
+
+    with scenario.set_scenario("User-Optimized") as (small, medium, large):
+        print(question1(small, random_postal_code))
+        print(question1(medium, random_postal_code))
+        print(question1(large, random_postal_code))
 
 
 def question1(cursor: sqlite3.Cursor, postal_code: str) -> int:

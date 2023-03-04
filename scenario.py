@@ -137,9 +137,9 @@ def set_scenario(scenario: Scenario):
 
     yield cursors
 
-    cursors[0].commit()
-    cursors[1].commit()
-    cursors[2].commit()
+    small.commit()
+    medium.commit()
+    large.commit()
 
 
 def create_tables(conn, scenario: Scenario):
