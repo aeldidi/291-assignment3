@@ -142,6 +142,29 @@ def set_scenario(scenario: Scenario):
     large.commit()
 
 
+def create_indicies(conn, scenario: Scenario):
+    if scenario == "Uninformed":
+        return
+    elif scenario == "Self-Optimized":
+        return
+
+    conn.executescript(
+        """
+        CREATE UNIQUE INDEX customer_index
+            ON Customers(customer_id);
+
+        CREATE UNIQUE INDEX sellers_index
+            ON Sellers(seller_id);
+
+        CREATE UNIQUE INDEX orders_index
+            ON Orders(order_id);
+
+        CREATE UNIQUE INDEX order_items_index
+            ON Order_items(order_id, order_item_id, product_id, seller_id);
+        """
+    )
+
+
 def create_tables(conn, scenario: Scenario):
     c = conn.cursor()
     if scenario == "Uninformed":
@@ -251,7 +274,7 @@ def create_tables(conn, scenario: Scenario):
 	        	FOREIGN KEY("order_id") REFERENCES "Orders"("order_id")
 	        );
 
-            PRAGMA automatic_index = true;
+            PRAGMA automatic_index = false;
 	        """
         )
     conn.commit()

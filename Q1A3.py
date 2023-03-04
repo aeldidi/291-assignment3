@@ -43,16 +43,13 @@ def question1(cursor: sqlite3.Cursor, postal_code: str) -> int:
     cursor.execute(
         f"""
         SELECT COUNT(*)
-            FROM Orders o, Customers c
+            FROM Orders o, Customers c, Order_items oi
             WHERE
-                o.customer_id = c.customer_id AND
                 c.customer_postal_code = {postal_code} AND
-                (
-                    SELECT COUNT(order_item_id)
-                        FROM Order_items oi
-                        WHERE
-                            o.order_id = oi.order_id
-                ) > 1;
+                o.customer_id = c.customer_id AND
+                oi.order_id = o.order_id
+            GROUP BY oi.product_id
+                HAVING COUNT(*) > 1;
         """
     )
 
@@ -65,7 +62,10 @@ def question1(cursor: sqlite3.Cursor, postal_code: str) -> int:
         HAVING COUNT(*) > 1;
     """
 
-    return cursor.fetchone()[0]
+    result = cursor.fetchone()
+    print(result)
+
+    return result[0]
 
 
 if __name__ == "__main__":
