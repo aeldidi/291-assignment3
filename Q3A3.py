@@ -1,6 +1,6 @@
 import scenario
 
-import timeit
+import time
 import sqlite3
 
 
@@ -72,7 +72,7 @@ def question3(
     """
     Rewrite query Q2 but not using any VIEW.
     """
-    start_time = timeit.default_timer()
+    start_time = time.perf_counter_ns()
 
     cursor.execute(
         f"""
@@ -104,8 +104,8 @@ def question3(
     )
     conn.commit()
 
-    elapsed = timeit.default_timer() - start_time
-    return elapsed
+    elapsed = time.perf_counter_ns() - start_time
+    return elapsed / 1e6
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import scenario
 
-import timeit
+import time
 import sqlite3
 
 
@@ -102,7 +102,7 @@ def question2(
     Using the view OrderSize, extend Q1 with the orders that have items more
     than the average number of items in the orders.
     """
-    start_time = timeit.default_timer()
+    start_time = time.perf_counter_ns()
 
     cursor.execute(
         f"""
@@ -127,8 +127,8 @@ def question2(
     )
     conn.commit()
 
-    elapsed = timeit.default_timer() - start_time
-    return elapsed
+    elapsed = time.perf_counter_ns() - start_time
+    return elapsed / 1e6
 
 
 if __name__ == "__main__":

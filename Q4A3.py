@@ -1,6 +1,6 @@
 import scenario
 
-import timeit
+import time
 import sqlite3
 
 
@@ -74,7 +74,7 @@ def question1(
     orders, find in how many (unique) postal codes the sellers provided those
     orders.
     """
-    start_time = timeit.default_timer()
+    start_time = time.perf_counter_ns()
 
     cursor.execute(
         f"""
@@ -96,8 +96,8 @@ def question1(
     )
     conn.commit()
 
-    elapsed = timeit.default_timer() - start_time
-    return elapsed
+    elapsed = time.perf_counter_ns() - start_time
+    return elapsed / 1e6
 
 
 if __name__ == "__main__":
