@@ -18,11 +18,11 @@ def main():
                 """
             )
             small.commit()
-            random_customer = c.fetchone()[0]
+            random_postal_code = c.fetchone()[0]
 
-            small_res = question4(small.cursor(), small, random_customer)
-            medium_res = question4(medium.cursor(), medium, random_customer)
-            large_res = question4(large.cursor(), large, random_customer)
+            small_res = question4(small.cursor(), small, random_postal_code)
+            medium_res = question4(medium.cursor(), medium, random_postal_code)
+            large_res = question4(large.cursor(), large, random_postal_code)
             print(f"{small_res}, {medium_res}, {large_res}")
 
     with scenario.set_scenario("Q4", "Self-Optimized") as (small, medium, large):
@@ -38,11 +38,11 @@ def main():
                 """
             )
             small.commit()
-            random_customer = c.fetchone()[0]
+            random_postal_code = c.fetchone()[0]
 
-            small_res = question4(small.cursor(), small, random_customer)
-            medium_res = question4(medium.cursor(), medium, random_customer)
-            large_res = question4(large.cursor(), large, random_customer)
+            small_res = question4(small.cursor(), small, random_postal_code)
+            medium_res = question4(medium.cursor(), medium, random_postal_code)
+            large_res = question4(large.cursor(), large, random_postal_code)
             print(f"{small_res}, {medium_res}, {large_res}")
 
     with scenario.set_scenario("Q4", "User-Optimized") as (small, medium, large):
@@ -58,11 +58,11 @@ def main():
                 """
             )
             small.commit()
-            random_customer = c.fetchone()[0]
+            random_postal_code = c.fetchone()[0]
 
-            small_res = question4(small.cursor(), small, random_customer)
-            medium_res = question4(medium.cursor(), medium, random_customer)
-            large_res = question4(large.cursor(), large, random_customer)
+            small_res = question4(small.cursor(), small, random_postal_code)
+            medium_res = question4(medium.cursor(), medium, random_postal_code)
+            large_res = question4(large.cursor(), large, random_postal_code)
             print(f"{small_res}, {medium_res}, {large_res}")
 
 
@@ -81,7 +81,9 @@ def create_view(cursor: sqlite3.Cursor, conn: sqlite3.Connection):
     conn.commit()
 
 
-def question4(cursor: sqlite3.Cursor, conn: sqlite3.Connection, customer: str) -> int:
+def question4(
+    cursor: sqlite3.Cursor, conn: sqlite3.Connection, postal_code: str
+) -> int:
     """
     Choose a random customer with more than one order and for that customer's
     orders, find in how many (unique) postal codes the sellers provided those
@@ -91,6 +93,16 @@ def question4(cursor: sqlite3.Cursor, conn: sqlite3.Connection, customer: str) -
 
     cursor.execute(
         f"""
+        SELECT COUNT(DISTINCT s.seller_postal_code) AS num_seller_postal_codes
+        FROM Orders o
+        JOIN Order_items oi ON
+            oi.order_id = o.order_id
+        JOIN Sellers s ON
+            s.seller_id = oi.seller_id
+        JOIN Customers c ON
+            c.customer_id = o.customer_id
+        WHERE
+            c.customer_postal_code = {postal_code};
         """
     )
     conn.commit()
