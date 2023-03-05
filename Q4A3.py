@@ -66,21 +66,6 @@ def main():
             print(f"{small_res}, {medium_res}, {large_res}")
 
 
-def create_view(cursor: sqlite3.Cursor, conn: sqlite3.Connection):
-    cursor.execute(
-        f"""
-        CREATE VIEW OrderSize AS
-        SELECT o.order_id, o.customer_id, COUNT(DISTINCT oi.order_item_id) AS num_items
-        FROM Orders o, Customers c, Order_items oi
-        WHERE
-        	o.customer_id = c.customer_id AND
-        	oi.order_id = o.order_id
-        GROUP BY o.order_id;
-        """
-    )
-    conn.commit()
-
-
 def question4(
     cursor: sqlite3.Cursor, conn: sqlite3.Connection, postal_code: str
 ) -> int:
