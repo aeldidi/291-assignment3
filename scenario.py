@@ -6,6 +6,7 @@ from pathlib import Path
 import csv
 import os
 import contextlib
+import sys
 
 """
 Creates the three files A3Small.db, A3Medium.db, and A3Large.db by randomly
@@ -112,7 +113,10 @@ def add_data(conn: sqlite3.Connection, size: Literal["Small", "Medium", "Large"]
 
 
 @contextlib.contextmanager
-def set_scenario(scenario: Scenario):
+def set_scenario(
+    question: str,
+    scenario: Scenario,
+) -> tuple[sqlite3.Connection, sqlite3.Connection, sqlite3.Connection]:
     if Path("A3Small.db").exists():
         os.remove("A3Small.db")
     if Path("A3Medium.db").exists():
@@ -133,9 +137,13 @@ def set_scenario(scenario: Scenario):
     add_data(medium, "Medium")
     add_data(large, "Large")
 
-    cursors = small.cursor(), medium.cursor(), large.cursor()
+    cursors = small, medium, large
 
+    old_stdout = sys.stdout
+    sys.stdout = open(question + "-" + scenario + ".csv", "w")
     yield cursors
+    sys.stdout.close()
+    sys.stdout = old_stdout
 
     small.commit()
     medium.commit()
@@ -274,7 +282,7 @@ def create_tables(conn, scenario: Scenario):
 	        	FOREIGN KEY("order_id") REFERENCES "Orders"("order_id")
 	        );
 
-            PRAGMA automatic_index = false;
+            PRAGMA automatic_index = true;
 	        """
         )
     conn.commit()
