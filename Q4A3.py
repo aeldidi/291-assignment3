@@ -11,18 +11,19 @@ def main():
             c = small.cursor()
             c.execute(
                 """
-                SELECT customer_postal_code
-                    FROM Customers
+                SELECT customer_id
+                    FROM OrderSize
+                    WHERE num_items > 1
                     ORDER BY RANDOM()
                     LIMIT 1;
                 """
             )
             small.commit()
-            random_postal_code = c.fetchone()[0]
+            random_customer = c.fetchone()[0]
 
-            small_res = question1(small.cursor(), small, random_postal_code)
-            medium_res = question1(medium.cursor(), medium, random_postal_code)
-            large_res = question1(large.cursor(), large, random_postal_code)
+            small_res = question4(small.cursor(), small, random_customer)
+            medium_res = question4(medium.cursor(), medium, random_customer)
+            large_res = question4(large.cursor(), large, random_customer)
             print(f"{small_res}, {medium_res}, {large_res}")
 
     with scenario.set_scenario("Q4", "Self-Optimized") as (small, medium, large):
@@ -31,18 +32,19 @@ def main():
             c = small.cursor()
             c.execute(
                 """
-                SELECT customer_postal_code
-                    FROM Customers
+                SELECT customer_id
+                    FROM OrderSize
+                    WHERE num_items > 1
                     ORDER BY RANDOM()
                     LIMIT 1;
                 """
             )
             small.commit()
-            random_postal_code = c.fetchone()[0]
+            random_customer = c.fetchone()[0]
 
-            small_res = question1(small.cursor(), small, random_postal_code)
-            medium_res = question1(medium.cursor(), medium, random_postal_code)
-            large_res = question1(large.cursor(), large, random_postal_code)
+            small_res = question4(small.cursor(), small, random_customer)
+            medium_res = question4(medium.cursor(), medium, random_customer)
+            large_res = question4(large.cursor(), large, random_customer)
             print(f"{small_res}, {medium_res}, {large_res}")
 
     with scenario.set_scenario("Q4", "User-Optimized") as (small, medium, large):
@@ -51,24 +53,38 @@ def main():
             c = small.cursor()
             c.execute(
                 """
-                SELECT customer_postal_code
-                    FROM Customers
+                SELECT customer_id
+                    FROM OrderSize
+                    WHERE num_items > 1
                     ORDER BY RANDOM()
                     LIMIT 1;
                 """
             )
             small.commit()
-            random_postal_code = c.fetchone()[0]
+            random_customer = c.fetchone()[0]
 
-            small_res = question1(small.cursor(), small, random_postal_code)
-            medium_res = question1(medium.cursor(), medium, random_postal_code)
-            large_res = question1(large.cursor(), large, random_postal_code)
+            small_res = question4(small.cursor(), small, random_customer)
+            medium_res = question4(medium.cursor(), medium, random_customer)
+            large_res = question4(large.cursor(), large, random_customer)
             print(f"{small_res}, {medium_res}, {large_res}")
 
 
-def question1(
-    cursor: sqlite3.Cursor, conn: sqlite3.Connection, postal_code: str
-) -> int:
+def create_view(cursor: sqlite3.Cursor, conn: sqlite3.Connection):
+    cursor.execute(
+        f"""
+        CREATE VIEW OrderSize AS
+        SELECT o.order_id, o.customer_id, COUNT(DISTINCT oi.order_item_id) AS num_items
+        FROM Orders o, Customers c, Order_items oi
+        WHERE
+        	o.customer_id = c.customer_id AND
+        	oi.order_id = o.order_id
+        GROUP BY o.order_id;
+        """
+    )
+    conn.commit()
+
+
+def question4(cursor: sqlite3.Cursor, conn: sqlite3.Connection, customer: str) -> int:
     """
     Choose a random customer with more than one order and for that customer's
     orders, find in how many (unique) postal codes the sellers provided those
@@ -78,20 +94,6 @@ def question1(
 
     cursor.execute(
         f"""
-        SELECT COUNT(DISTINCT oi.order_id)
-        FROM Orders AS o
-        JOIN Order_items AS oi ON oi.order_id = o.order_id
-        WHERE o.customer_id IN (
-            SELECT c.customer_id 
-            FROM Customers AS c 
-            WHERE c.customer_postal_code = {postal_code}
-        )
-        AND oi.order_id IN (
-            SELECT oi2.order_id
-            FROM Order_items AS oi2
-            GROUP BY oi2.order_id
-            HAVING COUNT(DISTINCT oi2.order_item_id) > 1
-        )
         """
     )
     conn.commit()
