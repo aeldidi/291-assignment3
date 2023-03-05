@@ -11,9 +11,8 @@ def main():
             c = small.cursor()
             c.execute(
                 """
-                SELECT customer_id
-                    FROM OrderSize
-                    WHERE num_items > 1
+                SELECT customer_postal_code
+                    FROM Customers
                     ORDER BY RANDOM()
                     LIMIT 1;
                 """
@@ -32,9 +31,8 @@ def main():
             c = small.cursor()
             c.execute(
                 """
-                SELECT customer_id
-                    FROM OrderSize
-                    WHERE num_items > 1
+                SELECT customer_postal_code
+                    FROM Customers
                     ORDER BY RANDOM()
                     LIMIT 1;
                 """
@@ -53,9 +51,8 @@ def main():
             c = small.cursor()
             c.execute(
                 """
-                SELECT customer_id
-                    FROM OrderSize
-                    WHERE num_items > 1
+                SELECT customer_postal_code
+                    FROM Customers
                     ORDER BY RANDOM()
                     LIMIT 1;
                 """
