@@ -244,6 +244,10 @@ def set_scenario(
     medium.commit()
     large.commit()
 
+    small.close()
+    medium.close()
+    large.close()
+
 
 def create_indicies(conn, scenario: Scenario):
     if scenario == "Uninformed":
