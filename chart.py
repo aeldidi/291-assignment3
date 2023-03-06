@@ -7,6 +7,7 @@ import csv
 def main():
     questions = ["Q1","Q2","Q3","Q4"]
     for question in questions:
+        print(parser(question))
         plot(question)
 
 
@@ -47,17 +48,18 @@ def plot(question_num):
     )
     data = parser(question_num)
     weight_counts = {
-        "User-Optimized": np.array([data["SmallDB"][2], data["MediumDB"][2], data["LargeDB"][2]]),
+        "Uninformed": np.array([data["SmallDB"][2], data["MediumDB"][2], data["LargeDB"][2]]),
         "Self-Optimized": np.array([data["SmallDB"][1], data["MediumDB"][1], data["LargeDB"][1]]),
-        "Uninformed": np.array([data["SmallDB"][0], data["MediumDB"][0], data["LargeDB"][0]])
+                "User-Optimized": np.array([data["SmallDB"][0], data["MediumDB"][0], data["LargeDB"][0]]),
+
     }
     # Width of each bar
     width = 0.5
     # Define custom colors for each label in the legend
     colors = {
-        "User-Optimized": "#0070C0",# Yellow
-        "Self-Optimized": "#FF0000",# Red
-        "Uninformed": "#FFC000" # Blue
+        "User-Optimized": "#FFC000" ,
+        "Self-Optimized": "#FF0000",
+        "Uninformed": "#0070C0", 
     }
     # Create figure and axis objects
     fig, ax = plt.subplots()
