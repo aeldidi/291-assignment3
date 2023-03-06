@@ -1,7 +1,7 @@
 import sqlite3
 import random
 import shutil
-from typing import Literal
+from typing import Literal, List
 from pathlib import Path
 import csv
 import os
@@ -168,7 +168,7 @@ def plot(question_num):
     plt.savefig(f"{question_num}A3chart.png")
 
 
-def n_random_csv_lines(filename: str, n: int) -> list[str]:
+def n_random_csv_lines(filename: str, n: int) -> List[str]:
     """
     Returns a list of n random lines from the file given by filename.
     """
