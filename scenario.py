@@ -1,7 +1,7 @@
 import sqlite3
 import random
 import shutil
-from typing import Literal, List
+from typing import Literal, List, Tuple
 from pathlib import Path
 import csv
 import os
@@ -211,7 +211,7 @@ def add_data(conn: sqlite3.Connection, size: Literal["Small", "Medium", "Large"]
 def set_scenario(
     question: str,
     scenario: Scenario,
-) -> tuple[sqlite3.Connection, sqlite3.Connection, sqlite3.Connection]:
+) -> Tuple[sqlite3.Connection, sqlite3.Connection, sqlite3.Connection]:
     if Path("A3Small.db").exists():
         os.remove("A3Small.db")
     if Path("A3Medium.db").exists():
