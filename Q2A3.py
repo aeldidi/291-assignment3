@@ -76,6 +76,7 @@ def main():
             medium_res = question2(medium.cursor(), medium, random_postal_code)
             large_res = question2(large.cursor(), large, random_postal_code)
             print(f"{small_res}, {medium_res}, {large_res}")
+    scenario.generate_plot("Q2")
 
 
 def create_view(cursor: sqlite3.Cursor, conn: sqlite3.Connection):

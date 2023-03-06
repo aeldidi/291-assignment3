@@ -64,6 +64,7 @@ def main():
             medium_res = question4(medium.cursor(), medium, random_postal_code)
             large_res = question4(large.cursor(), large, random_postal_code)
             print(f"{small_res}, {medium_res}, {large_res}")
+    scenario.generate_plot("Q4")
 
 
 def question4(
@@ -76,6 +77,10 @@ def question4(
     """
     start_time = time.perf_counter_ns()
 
+    # NOTE: Each customer_id is only associated with one order. Since the
+    #       question asks about customers with more than one order, we assume
+    #       that a postal code with more than one order is a customer with more
+    #       than one order.
     cursor.execute(
         f"""
         SELECT COUNT(DISTINCT s.seller_postal_code) AS num_seller_postal_codes

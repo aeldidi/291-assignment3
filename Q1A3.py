@@ -64,6 +64,7 @@ def main():
             medium_res = question1(medium.cursor(), medium, random_postal_code)
             large_res = question1(large.cursor(), large, random_postal_code)
             print(f"{small_res}, {medium_res}, {large_res}")
+    scenario.generate_plot("Q1")
 
 
 def question1(
